@@ -13,7 +13,7 @@
 	<application>kbartExport</application>
 	<type>plugins.generic</type>
 	<release>1.0.0.0</release>
-	<date>2021-05-06</date>
+	<date>2021-07-26</date>
 	<lazy-load>1</lazy-load>
 	<class>KBARTExportPlugin</class>
 </version>
