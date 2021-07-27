@@ -1,4 +1,4 @@
-# KBART Export Plugin
+# KBART-Export-Plugin
 
 Dieses Plugin exportiert alle Journals einer OJS-Instanz inkl. Metadaten als ```.txt``` Datei im KBART-Format. Diese kann unter [http://serv29.ub.uni-heidelberg.de/ojs-next/index.php/index/kbartexport](http://serv29.ub.uni-heidelberg.de/ojs-next/index.php/index/kbartexport) heruntergeladen werden. 
 
