@@ -30,6 +30,12 @@ class KBARTExportPlugin extends GenericPlugin {
 		return 'This plugin was created for exporting metadata in the KBART format.';
 	}
 
+    /**
+     * Declare the handler function to process the actual page PATH
+     * @param $hookName string The name of the invoked hook
+     * @param $args array Hook parameters
+     * @return boolean Hook handling status
+     */
     function callbackHandleContent($hookName, $args) {
         $request = Application::get()->getRequest();
 
