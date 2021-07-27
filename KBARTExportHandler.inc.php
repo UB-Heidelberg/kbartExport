@@ -1,41 +1,17 @@
 <?php
 
-/**
- * @file StaticPagesHandler.inc.php
- *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
- * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
- *
- * @package plugins.generic.staticPages
- * @class StaticPagesHandler
- * Find static page content and display it when requested.
- */
-
 import('classes.handler.Handler');
 
 class KBARTExportHandler extends Handler {
-    /** @var StaticPagesPlugin The static pages plugin */
+    /** @var KBARTExportPlugin The kbart export plugin */
     static $plugin;
-
-    /** @var StaticPage The static page to view */
-    static $staticPage;
-
-
+    
     /**
-     * Provide the static pages plugin to the handler.
-     * @param $plugin StaticPagesPlugin
+     * Provide the kbart export plugin to the handler.
+     * @param $plugin KBARTExportPlugin
      */
     static function setPlugin($plugin) {
         self::$plugin = $plugin;
-    }
-
-    /**
-     * Set a static page to view.
-     * @param $staticPage StaticPage
-     */
-    static function setPage($staticPage) {
-        self::$staticPage = $staticPage;
     }
 
     /**
@@ -46,7 +22,6 @@ class KBARTExportHandler extends Handler {
     function index($args, $request) {
         
         // Configure and build the name of the .txt file
-        // [ProviderName]_[Region/Consortium]_[PackageName]_[YYYY-MM-DD].txt
         $ProviderName = "UBHeidelberg";
         $RegionConsortium = "Global";
         $PackageName = "OJSJournals";

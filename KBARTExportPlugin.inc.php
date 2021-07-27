@@ -45,13 +45,10 @@ class KBARTExportPlugin extends GenericPlugin {
         // Check if this is a request for a static page or preview.
         if ($page == 'kbartexport') {
 
-            // It is -- attach the static pages handler.
+            // It is -- attach the kbart export handler.
             define('HANDLER_CLASS', 'KBARTExportHandler');
             $this->import('KBARTExportHandler');
-
-            // Allow the static pages page handler to get the plugin object
-            // StaticPagesHandler::setPlugin($this);
-            // StaticPagesHandler::setPage($staticPage);
+            
             return true;
         }
         return false;
