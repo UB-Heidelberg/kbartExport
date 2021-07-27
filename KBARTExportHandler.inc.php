@@ -61,7 +61,8 @@ class KBARTExportHandler extends Handler {
             "Journal-ID\t",
             "URL\t",
             "Online ISSN\t",
-            "Print ISSN\n"
+            "Print ISSN\t",
+            "Publisher\n"
         ];
 
         // Build Rows
