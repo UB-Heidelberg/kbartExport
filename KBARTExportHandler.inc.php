@@ -71,11 +71,13 @@ class KBARTExportHandler extends Handler {
             $entry = [$journalTitle , $journalID,  $journalURL];
             $entries[] = $entry;
         }
-        
+
+        // List table entries in alphabetical order by journal title
         usort($entries, function ($item1, $item2) {
             return strnatcasecmp($item1[0], $item2[0]);
         });
- 
+
+        // Trigger the "Save as" dialog 
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $fileName);
         header('Expires: 0');
