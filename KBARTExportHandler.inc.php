@@ -59,16 +59,29 @@ class KBARTExportHandler extends Handler {
         $headers = [
             "Journal-Titel\t",
             "Journal-ID\t",
-            "URL\n"
+            "URL\t",
+            "Online ISSN\t",
+            "Print ISSN\n"
         ];
 
         // Build Rows
         $journals = DAORegistry::getDAO('JournalDAO')->getAll(true)->toArray();
         foreach($journals as $journal) {
-            $journalTitle = $journal->getLocalizedName();
-            $journalID = $journal->getData('id');
-            $journalURL = $request->getRouter()->url($request, $journal->getPath());
-            $entry = [$journalTitle , $journalID,  $journalURL];
+            $title = $journal->getLocalizedName();
+            //$Id = $journal->getData('id');
+            $url = $request->getRouter()->url($request, $journal->getPath());
+            $printIssn = $journal->getSetting('printIssn');
+            $onlineIssn = $journal->getSetting('onlineIssn');
+            $publisherName = $journal->getSetting('publisherInstitution');
+            
+            $entry = [
+                $title,
+                $url,
+                $printIssn,
+                $onlineIssn,
+                $publisherName
+            ];
+            
             $entries[] = $entry;
         }
 
