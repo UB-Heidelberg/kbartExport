@@ -20,15 +20,15 @@ class KBARTExportPlugin extends GenericPlugin {
 	 * Provide a name for this plugin
 	 */
 	public function getDisplayName() {
-		return 'KBARTExportPlugin';
+		return __('plugins.generic.kbartExport.displayName');
 	}
 
 	/**
 	 * Provide a description for this plugin
 	 */
 	public function getDescription() {
-		return 'This plugin was created for exporting metadata in the KBART format.';
-	}
+	    return __('plugins.generic.kbartExport.description');
+    }
 
     /**
      * Declare the handler function to process the actual page PATH

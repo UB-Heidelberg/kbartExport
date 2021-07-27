@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-30T15:50:45-07:00\n"
+"PO-Revision-Date: 2020-01-29 10:35+0000\n"
+"Last-Translator: Heike Riegler <heike.riegler@julius-kuehn.de>\n"
+"Language-Team: German <http://translate.pkp.sfu.ca/projects/plugins/"
+"static-pages-plugin/de/>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+
+msgid "plugins.generic.kbartExport.displayName"
+msgstr "KBART-Export-Plugin"
+
+msgid "plugins.generic.kbartExport.description"
+msgstr "Dieses Plugin exportiert alle Journals einer OJS-Instanz inkl. Metadaten als .txt Datei im KBART-Format."
