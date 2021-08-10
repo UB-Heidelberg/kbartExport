@@ -33,7 +33,6 @@ class KBARTExportHandler extends Handler {
         // Define file header 
         $headers = [
             "Journal-Titel\t",
-            "Journal-ID\t",
             "URL\t",
             "Online ISSN\t",
             "Print ISSN\t",
