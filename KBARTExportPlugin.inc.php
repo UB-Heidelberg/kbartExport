@@ -31,6 +31,13 @@ class KBARTExportPlugin extends GenericPlugin {
     }
 
     /**
+     * @copydoc Plugin::isSitePlugin()
+     */
+    /*function isSitePlugin() {
+        return true;
+    }*/
+
+    /**
      * Declare the handler function to process the actual page PATH
      * @param $hookName string The name of the invoked hook
      * @param $args array Hook parameters
