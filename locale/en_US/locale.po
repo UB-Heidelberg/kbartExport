@@ -4,3 +4,20 @@ msgstr "KBART Export Plugin"
 msgid "plugins.generic.kbartExport.description"
 msgstr "This plugin exports all journals of an OJS instance including metadata as .txt file in KBART format."
 
+msgid "plugins.generic.kbartExport.settings.title"
+msgstr "Configuration of the file name"
+
+msgid "plugins.generic.kbartExport.settings.description"
+msgstr "Please configure the name of the file you want to export."
+
+msgid "plugins.generic.kbartExport.settings.providerName"
+msgstr "Provider Name"
+
+msgid "plugins.generic.kbartExport.settings.regionConsortium"
+msgstr "Region/Consortium"
+
+msgid "plugins.generic.kbartExport.settings.packageName"
+msgstr "Package Name"
+
+msgid "plugins.generic.kbartExport.settings.downloadButton"
+msgstr "Download"
