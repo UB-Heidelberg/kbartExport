@@ -1,5 +1,7 @@
 <?php
+
 import('lib.pkp.classes.form.Form');
+
 class KBARTExportSettingsForm extends Form {
 
 	/** @var KBARTExportPlugin  */

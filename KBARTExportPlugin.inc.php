@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file KBARTExportPlugin.inc.php
  *
@@ -9,6 +10,7 @@
  * @class KBARTExportPlugin
  * @brief Plugin class for the KBART Export plugin.
  */
+
 import('lib.pkp.classes.plugins.GenericPlugin');
 import('lib.pkp.classes.submission.SubmissionFile');
 import('lib.pkp.classes.components.forms.FieldOptions');
@@ -22,11 +24,13 @@ class KBARTExportPlugin extends GenericPlugin {
 
 		// Register the plugin even when it is not enabled
 		$success = parent::register($category, $path);
-		// error_log("KBARTExportPlugin: registered? $success");
+
 		if ($success && $this->getEnabled()) {
-			// error_log("KBARTExportPlugin: enabled");
+			// Load the page handler
 			HookRegistry::register('LoadHandler', array($this, 'callbackHandleContent'));
-			HookRegistry::register('Templates::Article::Main', [$this, 'updateFileName']);
+
+
+			HookRegistry::register('Templates::Article::Main', array($this, 'updateFileName'));
 			// HookRegistry::register('TemplateManager::display',array(&$this, 'getPluginSettings'));
 		}
 		return $success;
