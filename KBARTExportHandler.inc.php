@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @file NewsletterHelperHandler.inc.php
+ * @file KBARTExportHandler.inc.php
  *
  * Copyright (c) 2022 Heidelberg University
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
- * @class NewsletterHelperHandler
+ * @class KBARTExportHandler
  */
 
 import('classes.handler.Handler');
@@ -35,6 +35,7 @@ class KBARTExportHandler extends Handler {
         $context = Application::get()->getRequest()->getContext();
         $contextId = $context ? $context->getId() : CONTEXT_SITE;
 
+        // Configure the parameters to show up in the file name.
         $providerName = $plugin->getSetting($contextId, 'providerName');
         $regionConsortium = $plugin->getSetting($contextId, 'regionConsortium');
         $packageName = $plugin->getSetting($contextId, 'packageName');
@@ -44,7 +45,7 @@ class KBARTExportHandler extends Handler {
 
         $fileName = $providerName . "_" . $regionConsortium . "_" . $packageName . "_" . $date . ".txt";
 
-        // Define file header
+        // Define file header.
         $headers = [
             "publication_title\t",
             "print_identifier\t",
@@ -80,23 +81,17 @@ class KBARTExportHandler extends Handler {
             // Get all published issues for a given journal.
             $issues = $this->getIssuesByJournalId($journal->getId());
 
-            // // Extract datePublished property.
-            // $dates = array_column($issues_arr_data,'datePublished');
-            // error_log(var_export($dates,true));
-            // error_log("Date first issue online: " . var_export(min($dates),true));
-
             $publicationTitle = $this->getPublicationTitle($journal);
             $printIdentifier = $this->getPrintIdentifier($journal);
             $onlineIdentifier = $this->getOnlineIdentifier($journal);
 
-            error_log("Date First Issue Avaible Online: " . $this->getDateFirstIssueOnline($issues));
-
             $dateFirstIssueOnline = $this->getDateFirstIssueOnline($issues);
-            $numFirstVolOnline = $this->getNumFirstVolOnline($issues);
-            $numFirstIssueOnline = $this->getNumFirstIssueOnline($issues);
+            $numFirstVolOnline = $this->getNumFirstVolOnline($issues, $dateFirstIssueOnline);
+            $numFirstIssueOnline = $this->getNumFirstIssueOnline($issues, $dateFirstIssueOnline);
+
             $dateLastIssueOnline = $this->getDateLastIssueOnline($issues);
-            $numLastVolOnline = $this->getNumLastVolOnline($issues);
-            $numLastIssueOnline = $this->getNumLastIssueOnline($issues);
+            $numLastVolOnline = $this->getNumLastVolOnline($issues, $dateLastIssueOnline);
+            $numLastIssueOnline = $this->getNumLastIssueOnline($issues, $dateLastIssueOnline);
 
             $titleUrl = $this->getTitleUrl($request, $journal);
             $firstAuthor = $this->getFirstAuthor();
@@ -106,6 +101,7 @@ class KBARTExportHandler extends Handler {
             $notes = $this->getNotes();
             $publisherName = $this->getPublisherName($journal);
             $publicationType = $this->getPublicationType();
+
             $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint();
             $dateMonographPublishedOnline = $this->getMonographPublishedOnline();
             $monographVolume = $this->getMonographVolume();
@@ -174,8 +170,8 @@ class KBARTExportHandler extends Handler {
     /**
      * Get all published issues of a given journal
      *
-     * @param $journalId int
-     * @return Array
+     * @param int $journalId
+     * @return array
      */
     function getIssuesByJournalId($journalId) {
         $issueDao = DAORegistry::getDAO('IssueDAO');
@@ -183,6 +179,12 @@ class KBARTExportHandler extends Handler {
         // return $issueDao->getIssuesByIdentification($journalId)->toArray();
     }
 
+    /**
+     * Store a property common to all given issues in an array.
+     *
+     * @param array $issues
+     * @param string $property
+     */
     function getPropertyFromIssues($issues, $property) {
 
         // Convert nested array of Issue objects to pure nested array.
@@ -191,89 +193,138 @@ class KBARTExportHandler extends Handler {
         // Create nested array filled only with '_data' property of Issue object.
         $issues_arr_data = array_column($issues_arr, '_data');
 
-        // return $issues_arr_data;
-        return array_column($issues_arr_data, $property);
+        // Create new array containing the values of the given property.
+        $properties = array_column($issues_arr_data, $property);
+
+        return $properties;
     }
 
-    // Get the publication title of the journal
+    /**
+     * Get the publication's title of the journal.
+     *
+     * @param object $journal
+     * @return string
+     */
     function getPublicationTitle($journal) {
         return $journal->getLocalizedName();
     }
 
-    // Get the print-format identifier of the journal
+    /**
+     * Get the print-format identifier of the journal.
+     *
+     * @param object $journal
+     * @return string
+     */
     function getPrintIdentifier($journal) {
         return $journal->getData('printIssn');
     }
 
+    /**
+     * Get the online-format identifier of the journal.
+     *
+     * @param object $journal
+     * @return string
+     */
     function getOnlineIdentifier($journal) {
         return $journal->getData('onlineIssn');
     }
 
-    // Get the date of the first issue avaible online
+    /**
+     * Get the date of the first issue avaible online.
+     *
+     * @param array $issues
+     * @return string
+     */
     function getDateFirstIssueOnline($issues) {
 
-        // Get publication dates of given issues.
+        // Get publication dates of given issues as array.
         $dates = $this->getPropertyFromIssues($issues, 'datePublished');
 
+        // Return minimal value in dates array to get earliest date.
         return min($dates);
     }
 
-    // Get the number of the first issue avaible online
-    function getNumFirstVolOnline($issues) {
-        $numbers = [];
-
-        // Collect all numbers of a published issue
+    /**
+     * Get the volume number of the first issue avaible online.
+     *
+     * @param array $issues
+     * @param string $dateFirstIssueOnline
+     * @return int $volumeNumber
+     */
+    function getNumFirstVolOnline($issues, $dateFirstIssueOnline) {
         foreach ($issues as $issue) {
-            if ($issue->getData('published') == 1) {
-                array_push($numbers, $issue->getData('number'));
+            if ($issue->getData('datePublished') == $dateFirstIssueOnline) {
+                $volumeNumber = $issue->getData('volume');
+                break;
             }
         }
-        // error_log("ISSUE: " . var_export($numbers,true) . " NUMBERS: " . var_export(min($numbers),true));
-        if (isset($numbers) && !empty($numbers)) {
-            return min($numbers);
-        } else {
-            return "\t"; // TODO Ist das korrekt?
-        }
+        return $volumeNumber;
     }
 
-    function getNumFirstIssueOnline($issues) {
-        // Get all publication dates of published issues
-        $dates = [];
+    /**
+     * Get the issue number of the first issue avaible online
+     *
+     * @param array $issues
+     * @param string $dateFirstIssueOnline
+     * @param int $issueNumber
+     */
+    function getNumFirstIssueOnline($issues, $dateFirstIssueOnline) {
         foreach ($issues as $issue) {
-            if ($issue->getData('published') == 1) {
-                array_push($dates, $issue->getData('datePublished'));
+            if ($issue->getData('datePublished') == $dateFirstIssueOnline) {
+                $issueNumber = $issue->getData('number');
+                break;
             }
         }
-        return "getNumFirstIssueOnline";
+        return $issueNumber;
     }
 
-    // function getPublicationDatesByIssues($issues) {
-    //     // Convert nested array of Issue objects to pure nested array.
-    //     $issues_arr = json_decode(json_encode($issues), true);
-    //
-    //     // Create nested array filled only with '_data' property of Issue object.
-    //     $issues_arr_data = array_column($issues_arr, '_data');
-    //
-    //     // Extract datePublished property.
-    //     $dates = array_column($issues_arr_data, 'datePublished');
-    //
-    //     return $dates;
-    // }
-
+    /**
+     * Get the date of the last issue avaible online.
+     *
+     * @param array $issues
+     * @return string
+     */
     function getDateLastIssueOnline($issues) {
 
-        // Get publication dates of given issues.
+        // Get publication dates of given issues as array.
         $dates = $this->getPropertyFromIssues($issues, 'datePublished');
 
+        // Return maximal value in dates array to get latest date.
         return max($dates);
     }
 
-    function getNumLastVolOnline() {
-        return "getNumLastVolOnline";
+    /**
+     * Get the volume number of the last issue avaible online.
+     *
+     * @param array $issues
+     * @param string $dateLastIssueOnline
+     * @return int $volumeNumber
+     */
+    function getNumLastVolOnline($issues, $dateLastIssueOnline) {
+        foreach ($issues as $issue) {
+            if ($issue->getData('datePublished') == $dateLastIssueOnline) {
+                $volumeNumber = $issue->getData('volume');
+                break;
+            }
+        }
+        return $volumeNumber;
     }
 
-    function getNumLastIssueOnline() {
-        return "getNumLastIssueOnline";
+    /**
+     * Get the issue number of the last issue avaible online.
+     *
+     * @param array $issues
+     * @param string $dateLastIssueOnline
+     * @return int $volumeNumber
+     */
+    function getNumLastIssueOnline($issues, $dateLastIssueOnline) {
+        foreach ($issues as $issue) {
+            if ($issue->getData('datePublished') == $dateLastIssueOnline) {
+                $issueNumber = $issue->getData('number');
+                break;
+            }
+        }
+        return $issueNumber;
     }
 
     function getTitleUrl($request, $journal) {
@@ -300,6 +351,12 @@ class KBARTExportHandler extends Handler {
         return "getNotes";
     }
 
+    /**
+     * Get the publisher's name of the journal.
+     *
+     * @param object $journal
+     * @return string
+     */
     function getPublisherName($journal) {
         return $journal->getSetting('publisherInstitution');
     }
