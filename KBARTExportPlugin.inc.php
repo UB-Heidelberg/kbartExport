@@ -29,7 +29,7 @@ class KBARTExportPlugin extends GenericPlugin {
 			// Load the page handler
 			HookRegistry::register('LoadHandler', array($this, 'callbackHandleContent'));
 
-
+			// Update the file name as configured in the settings.
 			HookRegistry::register('Templates::Article::Main', array($this, 'updateFileName'));
 			// HookRegistry::register('TemplateManager::display',array(&$this, 'getPluginSettings'));
 		}
@@ -58,8 +58,7 @@ class KBARTExportPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Add a settings action to the plugin's entry in the
-	 * plugins list.
+	 * Add a settings action to the plugin's entry in the plugins list.
 	 *
 	 * @param Request $request
 	 * @param array $actionArgs
@@ -75,7 +74,7 @@ class KBARTExportPlugin extends GenericPlugin {
 		}
 
 		// Create a LinkAction that will call the plugin's
-		// `manage` method with the `settings` verb.updateFileName
+		// `manage` method with the `settings` verb.updateFileName.
 		$router = $request->getRouter();
 		$dispatcher = $router->getDispatcher();
 
@@ -121,8 +120,7 @@ class KBARTExportPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Show and save the settings form when the settings action
-	 * is clicked.
+	 * Show and save the settings form when the settings action is clicked.
 	 *
 	 * @param array $args
 	 * @param Request $request
@@ -157,7 +155,8 @@ class KBARTExportPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Declare the handler function to process the actual page PATH
+	 * Declare the handler function to process the actual page PATH,
+	 *
    	 * @param $hookName string The name of the invoked hook
    	 * @param $args array Hook parameters
    	 * @return boolean Hook handling status
@@ -193,17 +192,14 @@ class KBARTExportPlugin extends GenericPlugin {
 	 */
 	function updateFileName($hookName, $params) {
 
-		// $contextId = Application::get()->getRequest()->getContext()->getId();
-
+		// Get context ID.
 		$contextId = CONTEXT_SITE;
 
-		// Get the publication statement for this journal or press
+		// Get the parameters to show up in the file name.
 		$providerName = $this->getSetting($contextId, 'providerName');
 		$regionConsortium = $this->getSetting($contextId, 'regionConsortium');
 		$packageName = $this->getSetting($contextId, 'packageName');
 
-		// If the journal or press does not have a publication statement,
-		// check if there is one saved for the site.
 		if (!$providerName && $contextId !== CONTEXT_SITE) {
 			$providerName = $this->getSetting(CONTEXT_SITE, 'providerName');
 		}
@@ -214,7 +210,7 @@ class KBARTExportPlugin extends GenericPlugin {
 			$packageName = $this->getSetting(CONTEXT_SITE, 'packageName');
 		}
 
-		// Do not modify the output if there is no publication statement
+		// Do not modify the output if the parameters are not set.
 		if (!$providerName) {
 			return false;
 		}
@@ -225,7 +221,7 @@ class KBARTExportPlugin extends GenericPlugin {
 			return false;
 		}
 
-		// Add the publication statement to the output
+		// Add the publication statement to the output.
 		$output =& $params[2];
 		//$output .= '<p class="providerName">' . PKPString::stripUnsafeHtml($providerName) . '</p>';
 
