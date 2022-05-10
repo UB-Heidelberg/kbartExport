@@ -333,7 +333,7 @@ class KBARTExportHandler extends Handler {
     }
 
     function getFirstAuthor() {
-        return "\t";
+        return "";
     }
 
     function getTitleId($journal) {
@@ -341,15 +341,15 @@ class KBARTExportHandler extends Handler {
     }
 
     function getEmbargoInfo() {
-        return "\t";
+        return "";
     }
 
     function getCoverageDepth() {
-        return "fulltext\t";
+        return "fulltext";
     }
 
     function getNotes() {
-        return "\t";
+        return "";
     }
 
     /**
@@ -363,35 +363,35 @@ class KBARTExportHandler extends Handler {
     }
 
     function getPublicationType() {
-        return "serial\t";
+        return "serial";
     }
 
     function getDateMonographPublishedPrint() {
-        return "\t";
+        return "";
     }
 
     function getMonographPublishedOnline() {
-        return "\t";
+        return "";
     }
 
     function getMonographVolume() {
-        return "\t";
+        return "";
     }
 
     function getMonographEdition() {
-        return "\t";
+        return "";
     }
 
     function getFirstEditor() {
-        return "\t";
+        return "";
     }
 
     function getParentPublicationTitleId() {
-        return "\t";
+        return "";
     }
 
     function getPrecedingPublicationTitleId() {
-        return "\t";
+        return "";
     }
 
     function getAccessType() {
