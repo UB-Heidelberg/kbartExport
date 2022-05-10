@@ -65,9 +65,11 @@ function myFunction() {
 			}
 
         {fbvFormButtons submitText="common.save"}
-        
+
         {/fbvFormSection}
 
     {/fbvFormArea}
 
 </form>
+
+{$kbartDownloadUrl}

@@ -6,7 +6,7 @@ The KBART Export Plugin enables exporting metadata of all journals hosted in a g
 ```
 and can be configured in the plugin's settings.
 
-Further information concerning KBART in general can be found at https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=470024321 and the links therein.
+Further information concerning KBART in general can be found at https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=470024321 (in german) and the links therein (in english).
 
 ## Installation
 ```plaintext

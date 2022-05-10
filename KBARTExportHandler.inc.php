@@ -18,6 +18,7 @@ class KBARTExportHandler extends Handler {
 
     /**
      * Provide the kbart export plugin to the handler.
+     *
      * @param $plugin KBARTExportPlugin
      */
     static function setPlugin($plugin) {
@@ -202,7 +203,7 @@ class KBARTExportHandler extends Handler {
     /**
      * Get the publication's title of the journal.
      *
-     * @param object $journal
+     * @param Journal $journal
      * @return string
      */
     function getPublicationTitle($journal) {
@@ -212,7 +213,7 @@ class KBARTExportHandler extends Handler {
     /**
      * Get the print-format identifier of the journal.
      *
-     * @param object $journal
+     * @param Journal $journal
      * @return string
      */
     function getPrintIdentifier($journal) {
@@ -222,7 +223,7 @@ class KBARTExportHandler extends Handler {
     /**
      * Get the online-format identifier of the journal.
      *
-     * @param object $journal
+     * @param Journal $journal
      * @return string
      */
     function getOnlineIdentifier($journal) {
@@ -332,23 +333,23 @@ class KBARTExportHandler extends Handler {
     }
 
     function getFirstAuthor() {
-        return "getFirstAuthor";
+        return "\t";
     }
 
     function getTitleId() {
-        return "getTitleId";
+        return "\t";
     }
 
     function getEmbargoInfo() {
-        return "getEmbargoInfo";
+        return "\t";
     }
 
     function getCoverageDepth() {
-        return "getCoverageDepth";
+        return "\t";
     }
 
     function getNotes() {
-        return "getNotes";
+        return "\t";
     }
 
     /**
@@ -362,39 +363,39 @@ class KBARTExportHandler extends Handler {
     }
 
     function getPublicationType() {
-        return "getPublicationType";
+        return "\t";
     }
 
     function getDateMonographPublishedPrint() {
-        return "getDateMonographPublishedPrint";
+        return "\t";
     }
 
     function getMonographPublishedOnline() {
-        return "getMonographPublishedOnline";
+        return "\t";
     }
 
     function getMonographVolume() {
-        return "getMonographVolume";
+        return "\t";
     }
 
     function getMonographEdition() {
-        return "getMonographEdition";
+        return "\t";
     }
 
     function getFirstEditor() {
-        return "getFirstEditor";
+        return "\t";
     }
 
     function getParentPublicationTitleId() {
-        return "getParentPublicationTitleId";
+        return "\t";
     }
 
     function getPrecedingPublicationTitleId() {
-        return "getPrecedingPublicationTitleId";
+        return "\t";
     }
 
     function getAccessType() {
-        return "getAccessType";
+        return "\t";
     }
 
 }
