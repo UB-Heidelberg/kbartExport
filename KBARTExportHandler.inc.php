@@ -33,8 +33,7 @@ class KBARTExportHandler extends Handler {
     function index($args, $request) {
 
         $plugin = PluginRegistry::getPlugin('generic','kbartexportplugin');
-        $context = Application::get()->getRequest()->getContext();
-        $contextId = $context ? $context->getId() : CONTEXT_SITE;
+        $contextId = CONTEXT_SITE;
 
         // Configure the parameters to show up in the file name.
         $providerName = $plugin->getSetting($contextId, 'providerName');
@@ -75,8 +74,9 @@ class KBARTExportHandler extends Handler {
             "access_type\n"
         ];
 
-        // Get all journals
+        // Get all journals of the OJS instance.
         $journals = DAORegistry::getDAO('JournalDAO')->getAll(true)->toArray();
+
         foreach($journals as $journal) {
 
             // Get all published issues for a given journal.
@@ -96,7 +96,7 @@ class KBARTExportHandler extends Handler {
 
             $titleUrl = $this->getTitleUrl($request, $journal);
             $firstAuthor = $this->getFirstAuthor();
-            $titleId = $this->getTitleId();
+            $titleId = $this->getTitleId($journal);
             $embargoInfo = $this->getEmbargoInfo();
             $coverageDepth = $this->getCoverageDepth();
             $notes = $this->getNotes();
@@ -336,8 +336,8 @@ class KBARTExportHandler extends Handler {
         return "\t";
     }
 
-    function getTitleId() {
-        return "\t";
+    function getTitleId($journal) {
+        return $journal->getId();
     }
 
     function getEmbargoInfo() {
@@ -345,7 +345,7 @@ class KBARTExportHandler extends Handler {
     }
 
     function getCoverageDepth() {
-        return "\t";
+        return "fulltext\t";
     }
 
     function getNotes() {
@@ -363,7 +363,7 @@ class KBARTExportHandler extends Handler {
     }
 
     function getPublicationType() {
-        return "\t";
+        return "serial\t";
     }
 
     function getDateMonographPublishedPrint() {
@@ -395,7 +395,7 @@ class KBARTExportHandler extends Handler {
     }
 
     function getAccessType() {
-        return "\t";
+        return "F";
     }
 
 }
