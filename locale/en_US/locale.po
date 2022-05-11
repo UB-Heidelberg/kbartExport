@@ -21,3 +21,9 @@ msgstr "Package Name"
 
 msgid "plugins.generic.kbartExport.settings.downloadButton"
 msgstr "Download"
+
+msgid "plugins.generic.kbartExport.settings.downloadUrl"
+msgstr "Download URL"
+
+msgid "plugins.generic.kbartExport.settings.downloadUrl.description"
+msgstr "The file can be downloaded from <a href=\"{$kbartDownloadUrl}\">{$kbartDownloadUrl}</a>."

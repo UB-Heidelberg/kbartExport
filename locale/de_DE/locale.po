@@ -24,3 +24,9 @@ msgstr "Speichern"
 
 msgid "plugins.generic.kbartExport.settings.downloadButton"
 msgstr "Download"
+
+msgid "plugins.generic.kbartExport.settings.downloadUrl"
+msgstr "Download URL"
+
+msgid "plugins.generic.kbartExport.settings.downloadUrl.description"
+msgstr "Die Datei kann unter <a href=\"{$kbartDownloadUrl}\">{$kbartDownloadUrl}</a> heruntergeladen werden."

@@ -12,7 +12,7 @@ class KBARTExportSettingsForm extends Form {
 	 */
 	public function __construct($plugin) {
 
-		// Define the settings template and store a copy of the plugin object
+		// Define the settings template and store a copy of the plugin object.
 		parent::__construct($plugin->getTemplateResource('settings.tpl'));
 		$this->plugin = $plugin;
 
@@ -22,7 +22,7 @@ class KBARTExportSettingsForm extends Form {
 	}
 
 	/**
-	 * Load settings already saved in the database
+	 * Load settings already saved in the database.
 	 *
 	 * Settings are stored by context, so that each journal or press
 	 * can have different settings.
@@ -38,7 +38,7 @@ class KBARTExportSettingsForm extends Form {
 	}
 
 	/**
-	 * Load data that was submitted with the form
+	 * Load data that was submitted with the form.
 	 */
 	public function readInputData() {
 		$this->readUserVars(['providerName']);
@@ -58,16 +58,23 @@ class KBARTExportSettingsForm extends Form {
 	 */
 	public function fetch($request, $template = null, $display = false) {
 
+		// Build the download URL.
+		$router = $request->getRouter();
+		$dispatcher = $router->getDispatcher();
+		$kbartDownloadUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'kbartexport', null, null);
+		// error_log("kbartDownloadUrl: " . $kbartDownloadUrl);
+
 		// Pass the plugin name to the template so that it can be
-		// used in the URL that the form is submitted to
+		// used in the URL that the form is submitted to.
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('pluginName', $this->plugin->getName());
+		$templateMgr->assign('kbartDownloadUrl', $kbartDownloadUrl);
 
 		return parent::fetch($request, $template, $display);
 	}
 
 	/**
-	 * Save the settings
+	 * Save the settings.
 	 *
 	 * @return null|mixed
 	 */

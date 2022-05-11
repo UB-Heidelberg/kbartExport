@@ -64,12 +64,14 @@ function myFunction() {
                 required="true"
 			}
 
-        {fbvFormButtons submitText="common.save"}
-
         {/fbvFormSection}
 
+        {fbvFormSection label="plugins.generic.kbartExport.settings.downloadUrl"}
+            {capture assign="kbartDownloadUrl"}{$kbartDownloadUrl}{/capture}
+            {translate key="plugins.generic.kbartExport.settings.downloadUrl.description" kbartDownloadUrl=$kbartDownloadUrl}
+        {/fbvFormSection}
+
+        {fbvFormButtons submitText="common.save"}
     {/fbvFormArea}
 
 </form>
-
-{$kbartDownloadUrl}
