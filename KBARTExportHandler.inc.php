@@ -26,7 +26,8 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Handle index request (redirect to "view")
+     * Handle index request (redirect to "view").
+     *
      * @param $args array Arguments array.
      * @param $request PKPRequest Request object.
      */
@@ -143,33 +144,32 @@ class KBARTExportHandler extends Handler {
             $entries[] = $entry;
         }
 
-        // List table entries in alphabetical order by journal title
+        // List table entries in alphabetical order by journal title.
         usort($entries, function ($item1, $item2) {
             return strnatcasecmp($item1[0], $item2[0]);
         });
 
-        // Trigger the "Save as" dialog
+        // Trigger the "Save as" dialog.
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $fileName);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        //header('Content-Length: ' . filesize($file));
         header("Content-Type: text/plain");
 
-        // Output file header
+        // Output file header.
         foreach($headers as $header) {
             echo $header;
         }
 
-        // Output file body
+        // Output file body.
         foreach($entries as $entry) {
             echo implode("\t",$entry) . "\n";
         }
     }
 
     /**
-     * Get all published issues of a given journal
+     * Get all published issues of a given journal.
      *
      * @param int $journalId
      * @return array
@@ -177,7 +177,6 @@ class KBARTExportHandler extends Handler {
     function getIssuesByJournalId($journalId) {
         $issueDao = DAORegistry::getDAO('IssueDAO');
         return $issueDao->getPublishedIssues($journalId)->toArray();
-        // return $issueDao->getIssuesByIdentification($journalId)->toArray();
     }
 
     /**
@@ -263,7 +262,7 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Get the issue number of the first issue avaible online
+     * Get the issue number of the first issue avaible online.
      *
      * @param array $issues
      * @param string $dateFirstIssueOnline
@@ -328,10 +327,21 @@ class KBARTExportHandler extends Handler {
         return $issueNumber;
     }
 
+    /**
+     * Get the title URL.
+     *
+     * @param Request $request
+     * @return Journal $journal
+     */
     function getTitleUrl($request, $journal) {
         return $request->getRouter()->url($request, $journal->getPath());
     }
 
+    /**
+     * Get the first author's name (not avaible for journals).
+     *
+     * @return string
+     */
     function getFirstAuthor() {
         return "";
     }
@@ -340,14 +350,29 @@ class KBARTExportHandler extends Handler {
         return $journal->getId();
     }
 
+    /**
+     * Get the embargo information.
+     *
+     * @return string
+     */
     function getEmbargoInfo() {
         return "";
     }
 
+    /**
+     * Get the coverage depth.
+     *
+     * @return string
+     */
     function getCoverageDepth() {
         return "fulltext";
     }
 
+    /**
+     * Get notes.
+     *
+     * @return string
+     */
     function getNotes() {
         return "";
     }
@@ -355,45 +380,90 @@ class KBARTExportHandler extends Handler {
     /**
      * Get the publisher's name of the journal.
      *
-     * @param object $journal
+     * @param Journal $journal
      * @return string
      */
     function getPublisherName($journal) {
         return $journal->getSetting('publisherInstitution');
     }
 
+    /**
+     * Get the first author's name (not avaible for journals).
+     *
+     * @return string
+     */
     function getPublicationType() {
         return "serial";
     }
 
+    /**
+     * Get the date when the monograph was published (not avaible for journals).
+     *
+     * @return string
+     */
     function getDateMonographPublishedPrint() {
         return "";
     }
 
+    /**
+     * Get the date when the monograph was published online (not avaible for journals).
+     *
+     * @return string
+     */
     function getMonographPublishedOnline() {
         return "";
     }
 
+    /**
+     * Get the monograph's volume (not avaible for journals).
+     *
+     * @return string
+     */
     function getMonographVolume() {
         return "";
     }
 
+    /**
+     * Get the monograph's edition (not avaible for journals).
+     *
+     * @return string
+     */
     function getMonographEdition() {
         return "";
     }
 
+    /**
+     * Get the first editor's name (not avaible for journals).
+     *
+     * @return string
+     */
     function getFirstEditor() {
         return "";
     }
 
+    /**
+     * Get the parent publication's title id.
+     *
+     * @return string
+     */
     function getParentPublicationTitleId() {
         return "";
     }
 
+    /**
+     * Get the preceding publication's title id.
+     *
+     * @return string
+     */
     function getPrecedingPublicationTitleId() {
         return "";
     }
 
+    /**
+     * Get the access type.
+     *
+     * @return string
+     */
     function getAccessType() {
         return "F";
     }

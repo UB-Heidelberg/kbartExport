@@ -8,7 +8,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class KBARTExportPlugin
- * @brief Plugin class for the KBART Export plugin.
+ * @brief Plugin for exporting journal metadata as .txt file in KBART format.
  */
 
 import('lib.pkp.classes.plugins.GenericPlugin');
@@ -22,29 +22,28 @@ class KBARTExportPlugin extends GenericPlugin {
 	 */
 	public function register($category, $path, $mainContextId = NULL) {
 
-		// Register the plugin even when it is not enabled
+		// Register the plugin even when it is not enabled.
 		$success = parent::register($category, $path);
 
 		if ($success && $this->getEnabled()) {
-			// Load the page handler
+			// Load the page handler.
 			HookRegistry::register('LoadHandler', array($this, 'callbackHandleContent'));
 
 			// Update the file name as configured in the settings.
 			HookRegistry::register('Templates::Article::Main', array($this, 'updateFileName'));
-			// HookRegistry::register('TemplateManager::display',array(&$this, 'getPluginSettings'));
 		}
 		return $success;
 	}
 
 	/**
-	 * Provide a name for this plugin
+	 * Provide a name for this plugin.
 	 */
 	public function getDisplayName() {
 		return __('plugins.generic.kbartExport.displayName');
 	}
 
 	/**
-	 * Provide a description for this plugin
+	 * Provide a description for this plugin.
 	 */
 	public function getDescription() {
 		return __('plugins.generic.kbartExport.description');
@@ -129,8 +128,7 @@ class KBARTExportPlugin extends GenericPlugin {
 	public function manage($args, $request) {
 		switch ($request->getUserVar('verb')) {
 
-			// Return a JSON response containing the
-			// settings form
+			// Return a JSON response containing the settings form.
 			case 'settings':
 
 				// Load the custom form
@@ -138,13 +136,13 @@ class KBARTExportPlugin extends GenericPlugin {
 				$form = new KBARTExportSettingsForm($this);
 
 				// Fetch the form the first time it loads, before
-				// the user has tried to save it
+				// the user has tried to save it.
 				if (!$request->getUserVar('save')) {
 					$form->initData();
 					return new JSONMessage(true, $form->fetch($request));
 				}
 
-				// Validate and save the form data
+				// Validate and save the form data.
 				$form->readInputData();
 				if ($form->validate()) {
 					$form->execute();
@@ -155,7 +153,7 @@ class KBARTExportPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Declare the handler function to process the actual page PATH,
+	 * Declare the handler function to process the actual page PATH.
 	 *
    	 * @param $hookName string The name of the invoked hook
    	 * @param $args array Hook parameters
@@ -200,16 +198,6 @@ class KBARTExportPlugin extends GenericPlugin {
 		$regionConsortium = $this->getSetting($contextId, 'regionConsortium');
 		$packageName = $this->getSetting($contextId, 'packageName');
 
-		if (!$providerName && $contextId !== CONTEXT_SITE) {
-			$providerName = $this->getSetting(CONTEXT_SITE, 'providerName');
-		}
-		if (!$regionConsortium && $contextId !== CONTEXT_SITE) {
-			$regionConsortium = $this->getSetting(CONTEXT_SITE, 'regionConsortium');
-		}
-		if (!$packageName && $contextId !== CONTEXT_SITE) {
-			$packageName = $this->getSetting(CONTEXT_SITE, 'packageName');
-		}
-
 		// Do not modify the output if the parameters are not set.
 		if (!$providerName) {
 			return false;
@@ -221,9 +209,9 @@ class KBARTExportPlugin extends GenericPlugin {
 			return false;
 		}
 
+		error_log("params[2]: " . var_export($params[2],true));
 		// Add the publication statement to the output.
 		$output =& $params[2];
-		//$output .= '<p class="providerName">' . PKPString::stripUnsafeHtml($providerName) . '</p>';
 
 		return false;
 	}

@@ -62,7 +62,6 @@ class KBARTExportSettingsForm extends Form {
 		$router = $request->getRouter();
 		$dispatcher = $router->getDispatcher();
 		$kbartDownloadUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'kbartexport', null, null);
-		// error_log("kbartDownloadUrl: " . $kbartDownloadUrl);
 
 		// Pass the plugin name to the template so that it can be
 		// used in the URL that the form is submitted to.
@@ -79,8 +78,6 @@ class KBARTExportSettingsForm extends Form {
 	 * @return null|mixed
 	 */
 	public function execute() {
-		$context = Application::get()->getRequest()->getContext();
-		// $contextId = $context ? $context->getId() : CONTEXT_SITE;
 		$contextId = CONTEXT_SITE;
 
 		$this->plugin->updateSetting($contextId, 'providerName', $this->getData('providerName'));
