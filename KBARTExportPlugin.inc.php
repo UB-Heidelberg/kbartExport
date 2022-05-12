@@ -99,20 +99,9 @@ class KBARTExportPlugin extends GenericPlugin {
 			null
 		);
 
-		import('lib.pkp.classes.linkAction.request.RedirectAction');
-		$redirectAction = new LinkAction(
-			'downloadFile',
-			new RedirectAction(
-				$dispatcher->url($request, ROUTE_PAGE, null, 'kbartexport', null, null)
-			),
-			__('plugins.generic.kbartExport.settings.downloadButton'),
-			null
-		);
-
 		// Add the LinkAction to the existing actions.
 		// Make it the first action to be consistent with
 		// other plugins.
-		array_unshift($actions, $redirectAction);
 		array_unshift($actions, $linkAction);
 
 		return $actions;
