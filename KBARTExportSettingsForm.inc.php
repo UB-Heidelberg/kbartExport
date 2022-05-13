@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @file KBARTExportSettingsForm.inc.php
+ *
+ * Copyright (c) 2022 Heidelberg University
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+ *
+ * @class KBARTExportSettingsForm
+ */
+
 import('lib.pkp.classes.form.Form');
 
 class KBARTExportSettingsForm extends Form {
