@@ -52,95 +52,99 @@ class KBARTExportHandler extends Handler {
         $headers = [
             "publication_title\t",
             "print_identifier\t",
-            "online_identifier\t",
-            "date_first_issue_online\t",
-            "num_first_vol_online\t",
-            "num_first_issue_online\t",
-            "date_last_issue_online\t",
-            "num_last_vol_online\t",
-            "num_last_issue_online\t",
-            "title_url\t",
-            "first_author\t",
-            "title_id\t",
-            "embargo_info\t",
-            "coverage_depth\t",
-            "notes\t",
-            "publisher_name\t",
-            "publication_type\t",
-            "date_monograph_published_print\t",
-            "date_monograph_published_online\t",
-            "monograph_volume\t",
-            "monograph_edition\t",
-            "first_editor\t",
-            "parent_publication_title_id\t",
-            "preceding_publication_title_id\t",
-            "access_type\n"
+            "online_identifier\n",
+            // "date_first_issue_online\t",
+            // "num_first_vol_online\t",
+            // "num_first_issue_online\t",
+            // "date_last_issue_online\t",
+            // "num_last_vol_online\t",
+            // "num_last_issue_online\t",
+            // "title_url\t",
+            // "first_author\t",
+            // "title_id\t",
+            // "embargo_info\t",
+            // "coverage_depth\t",
+            // "notes\t",
+            // "publisher_name\t",
+            // "publication_type\t",
+            // "date_monograph_published_print\t",
+            // "date_monograph_published_online\t",
+            // "monograph_volume\t",
+            // "monograph_edition\t",
+            // "first_editor\t",
+            // "parent_publication_title_id\t",
+            // "preceding_publication_title_id\t",
+            // "access_type\n"
         ];
 
-        // Get all journals of the OJS instance.
-        $journals = DAORegistry::getDAO('JournalDAO')->getAll(true)->toArray();
+        // Get all monographs of the press.
+        $pressDao = DAORegistry::getDAO('PressDAO');
+        $press = $request->getContext();
+        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
+        $monographs = $submissionDao->getByContextId($press->getId())->toArray();
 
-        foreach($journals as $journal) {
+        foreach($monographs as $monograph) {
 
-            // Get all published issues for a given journal.
-            $issues = $this->getIssuesByJournalId($journal->getId());
+            // error_log("monograph->getCurrentPublication(): " . var_export($monograph->getCurrentPublication(),true));
+            // $currentPublication = $monograph->getCurrentPublication();
+            // error_log("getPublicationTitle: " . var_export($this->getPublicationTitle($monograph),true));
 
-            $publicationTitle = $this->getPublicationTitle($journal);
-            $printIdentifier = $this->getPrintIdentifier($journal);
-            $onlineIdentifier = $this->getOnlineIdentifier($journal);
+            $publicationTitle = $this->getPublicationTitle($monograph);
+            $printIdentifier = $this->getPrintIdentifier($monograph);
+            $onlineIdentifier = $this->getOnlineIdentifier($monograph);
 
-            $dateFirstIssueOnline = $this->getDateFirstIssueOnline($issues);
-            $numFirstVolOnline = $this->getNumFirstVolOnline($issues, $dateFirstIssueOnline);
-            $numFirstIssueOnline = $this->getNumFirstIssueOnline($issues, $dateFirstIssueOnline);
-
-            $dateLastIssueOnline = $this->getDateLastIssueOnline($issues);
-            $numLastVolOnline = $this->getNumLastVolOnline($issues, $dateLastIssueOnline);
-            $numLastIssueOnline = $this->getNumLastIssueOnline($issues, $dateLastIssueOnline);
-
-            $titleUrl = $this->getTitleUrl($request, $journal);
-            $firstAuthor = $this->getFirstAuthor();
-            $titleId = $this->getTitleId($journal);
-            $embargoInfo = $this->getEmbargoInfo();
-            $coverageDepth = $this->getCoverageDepth();
-            $notes = $this->getNotes();
-            $publisherName = $this->getPublisherName($journal);
-            $publicationType = $this->getPublicationType();
-
-            $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint();
-            $dateMonographPublishedOnline = $this->getMonographPublishedOnline();
-            $monographVolume = $this->getMonographVolume();
-            $monographEdition = $this->getMonographEdition();
-            $firstEditor = $this->getFirstEditor();
-            $parentPublicationTitleId = $this->getParentPublicationTitleId();
-            $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
-            $accessType = $this->getAccessType();
+            // $dateFirstIssueOnline = $this->getDateFirstIssueOnline($issues);
+            // $numFirstVolOnline = $this->getNumFirstVolOnline($issues, $dateFirstIssueOnline);
+            // $numFirstIssueOnline = $this->getNumFirstIssueOnline($issues, $dateFirstIssueOnline);
+            //
+            // $dateLastIssueOnline = $this->getDateLastIssueOnline($issues);
+            // $numLastVolOnline = $this->getNumLastVolOnline($issues, $dateLastIssueOnline);
+            // $numLastIssueOnline = $this->getNumLastIssueOnline($issues, $dateLastIssueOnline);
+            //
+            // $titleUrl = $this->getTitleUrl($request, $journal);
+            // $firstAuthor = $this->getFirstAuthor();
+            // $titleId = $this->getTitleId($journal);
+            // $embargoInfo = $this->getEmbargoInfo();
+            // $coverageDepth = $this->getCoverageDepth();
+            // $notes = $this->getNotes();
+            // $publisherName = $this->getPublisherName($journal);
+            // $publicationType = $this->getPublicationType();
+            //
+            // $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint();
+            // $dateMonographPublishedOnline = $this->getMonographPublishedOnline();
+            // $monographVolume = $this->getMonographVolume();
+            // $monographEdition = $this->getMonographEdition();
+            // $firstEditor = $this->getFirstEditor();
+            // $parentPublicationTitleId = $this->getParentPublicationTitleId();
+            // $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
+            // $accessType = $this->getAccessType();
 
             $entry = [
                 $publicationTitle,
                 $printIdentifier,
                 $onlineIdentifier,
-                $dateFirstIssueOnline,
-                $numFirstVolOnline,
-                $numFirstIssueOnline,
-                $dateLastIssueOnline,
-                $numLastVolOnline,
-                $numLastIssueOnline,
-                $titleUrl,
-                $firstAuthor,
-                $titleId,
-                $embargoInfo,
-                $coverageDepth,
-                $notes,
-                $publisherName,
-                $publicationType,
-                $dateMonographPublishedPrint,
-                $dateMonographPublishedOnline,
-                $monographVolume,
-                $monographEdition,
-                $firstEditor,
-                $parentPublicationTitleId,
-                $precedingPublicationTitleId,
-                $accessType
+                // $dateFirstIssueOnline,
+                // $numFirstVolOnline,
+                // $numFirstIssueOnline,
+                // $dateLastIssueOnline,
+                // $numLastVolOnline,
+                // $numLastIssueOnline,
+                // $titleUrl,
+                // $firstAuthor,
+                // $titleId,
+                // $embargoInfo,
+                // $coverageDepth,
+                // $notes,
+                // $publisherName,
+                // $publicationType,
+                // $dateMonographPublishedPrint,
+                // $dateMonographPublishedOnline,
+                // $monographVolume,
+                // $monographEdition,
+                // $firstEditor,
+                // $parentPublicationTitleId,
+                // $precedingPublicationTitleId,
+                // $accessType
             ];
 
             $entries[] = $entry;
@@ -204,11 +208,13 @@ class KBARTExportHandler extends Handler {
     /**
      * Get the publication's title of the journal.
      *
-     * @param Journal $journal
+     * @param Submission $monograph
      * @return string
      */
-    function getPublicationTitle($journal) {
-        return $journal->getLocalizedName();
+    function getPublicationTitle($monograph) {
+        $publication = $monograph->getCurrentPublication();
+        // TODO: If monograph has no localized titles, getLocalizedTitle returns array
+        return $publication->getLocalizedTitle();
     }
 
     /**
@@ -217,7 +223,8 @@ class KBARTExportHandler extends Handler {
      * @param Journal $journal
      * @return string
      */
-    function getPrintIdentifier($journal) {
+    function getPrintIdentifier($monograph) {
+        $publication = $monograph->getCurrentPublication();
         return $journal->getData('printIssn');
     }
 

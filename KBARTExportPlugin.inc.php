@@ -54,7 +54,7 @@ class KBARTExportPlugin extends GenericPlugin {
 	 * @copydoc Plugin::isSitePlugin()
 	 */
 	function isSitePlugin() {
-		return true;
+		return false;
 	}
 
 	/**
