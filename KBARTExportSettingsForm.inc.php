@@ -88,7 +88,7 @@ class KBARTExportSettingsForm extends Form {
 	 *
 	 * @return null|mixed
 	 */
-	public function execute() {
+	public function execute(...$functionArgs) {
 		$contextId = CONTEXT_SITE;
 
 		$this->plugin->updateSetting($contextId, 'providerName', $this->getData('providerName'));
@@ -104,6 +104,6 @@ class KBARTExportSettingsForm extends Form {
 			['contents' => __('common.changesSaved')]
 		);
 
-		return parent::execute();
+		return parent::execute($functionArgs);
 	}
 }
