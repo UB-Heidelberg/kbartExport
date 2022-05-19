@@ -281,7 +281,11 @@ class KBARTExportHandler extends Handler {
                 break;
             }
         }
-        return $issueNumber;
+        if ($issueNumber == 0) {
+            return "";
+        } else {
+            return $issueNumber;
+        }
     }
 
     /**
@@ -334,7 +338,11 @@ class KBARTExportHandler extends Handler {
                 break;
             }
         }
-        return $issueNumber;
+        if ($issueNumber == 0) {
+            return "";
+        } else {
+            return $issueNumber;
+        }
     }
 
     /**
