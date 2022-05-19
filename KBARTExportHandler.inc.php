@@ -51,15 +51,15 @@ class KBARTExportHandler extends Handler {
         // Define file header.
         $headers = [
             "publication_title\t",
-            "print_identifier\t",
-            "online_identifier\n",
+            // "print_identifier\t",
+            // "online_identifier\n",
             // "date_first_issue_online\t",
             // "num_first_vol_online\t",
             // "num_first_issue_online\t",
             // "date_last_issue_online\t",
             // "num_last_vol_online\t",
             // "num_last_issue_online\t",
-            // "title_url\t",
+            "title_url\t",
             // "first_author\t",
             // "title_id\t",
             // "embargo_info\t",
@@ -85,13 +85,12 @@ class KBARTExportHandler extends Handler {
 
         foreach($monographs as $monograph) {
 
-            // error_log("monograph->getCurrentPublication(): " . var_export($monograph->getCurrentPublication(),true));
-            // $currentPublication = $monograph->getCurrentPublication();
-            // error_log("getPublicationTitle: " . var_export($this->getPublicationTitle($monograph),true));
-
+            error_log("MONOGRAPH" . var_export($monograph,true));
+            error_log("PUBLICATION" . var_export($monograph->getCurrentPublication(),true));
+            die();
             $publicationTitle = $this->getPublicationTitle($monograph);
-            $printIdentifier = $this->getPrintIdentifier($monograph);
-            $onlineIdentifier = $this->getOnlineIdentifier($monograph);
+            // $printIdentifier = $this->getPrintIdentifier($monograph);
+            // $onlineIdentifier = $this->getOnlineIdentifier($monograph);
 
             // $dateFirstIssueOnline = $this->getDateFirstIssueOnline($issues);
             // $numFirstVolOnline = $this->getNumFirstVolOnline($issues, $dateFirstIssueOnline);
@@ -101,7 +100,7 @@ class KBARTExportHandler extends Handler {
             // $numLastVolOnline = $this->getNumLastVolOnline($issues, $dateLastIssueOnline);
             // $numLastIssueOnline = $this->getNumLastIssueOnline($issues, $dateLastIssueOnline);
             //
-            // $titleUrl = $this->getTitleUrl($request, $journal);
+            $titleUrl = $this->getTitleUrl($request, $monograph);
             // $firstAuthor = $this->getFirstAuthor();
             // $titleId = $this->getTitleId($journal);
             // $embargoInfo = $this->getEmbargoInfo();
@@ -119,17 +118,21 @@ class KBARTExportHandler extends Handler {
             // $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
             // $accessType = $this->getAccessType();
 
+            error_log("=============================================");
+            error_log("publicationTitle: " . $publicationTitle);
+            error_log("titleUrl: " . $titleUrl);
+
             $entry = [
                 $publicationTitle,
-                $printIdentifier,
-                $onlineIdentifier,
+                // $printIdentifier,
+                // $onlineIdentifier,
                 // $dateFirstIssueOnline,
                 // $numFirstVolOnline,
                 // $numFirstIssueOnline,
                 // $dateLastIssueOnline,
                 // $numLastVolOnline,
                 // $numLastIssueOnline,
-                // $titleUrl,
+                $titleUrl,
                 // $firstAuthor,
                 // $titleId,
                 // $embargoInfo,
@@ -225,7 +228,7 @@ class KBARTExportHandler extends Handler {
      */
     function getPrintIdentifier($monograph) {
         $publication = $monograph->getCurrentPublication();
-        return $journal->getData('printIssn');
+        return $monograph->getData('printIssn');
     }
 
     /**
@@ -342,8 +345,8 @@ class KBARTExportHandler extends Handler {
      * @param Request $request
      * @return Journal $journal
      */
-    function getTitleUrl($request, $journal) {
-        return $request->getRouter()->url($request, $journal->getPath());
+    function getTitleUrl($request, $monograph) {
+        return $request->getRouter()->url($request, $monograph->getCurrentPublication()->getData('urlPath'));
     }
 
     /**
