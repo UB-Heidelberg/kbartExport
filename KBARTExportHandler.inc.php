@@ -260,7 +260,11 @@ class KBARTExportHandler extends Handler {
                 break;
             }
         }
-        return $volumeNumber;
+        if ($volumeNumber == 0) {
+            return "";
+        } else {
+            return $volumeNumber;
+        }
     }
 
     /**
@@ -309,7 +313,11 @@ class KBARTExportHandler extends Handler {
                 break;
             }
         }
-        return $volumeNumber;
+        if ($volumeNumber == 0) {
+            return "";
+        } else {
+            return $volumeNumber;
+        }
     }
 
     /**
