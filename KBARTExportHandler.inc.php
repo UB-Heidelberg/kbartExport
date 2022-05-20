@@ -51,8 +51,8 @@ class KBARTExportHandler extends Handler {
         // Define file header.
         $headers = [
             "publication_title\t",
-            // "print_identifier\t",
-            // "online_identifier\n",
+            "print_identifier\t",
+            "online_identifier\t",
             "date_first_issue_online\t",
             "num_first_vol_online\t",
             "num_first_issue_online\t",
@@ -67,10 +67,10 @@ class KBARTExportHandler extends Handler {
             "notes\t",
             "publisher_name\t",
             "publication_type\t",
-            // "date_monograph_published_print\t",
-            // "date_monograph_published_online\t",
-            // "monograph_volume\t",
-            // "monograph_edition\t",
+            "date_monograph_published_print\t",
+            "date_monograph_published_online\t",
+            "monograph_volume\t",
+            "monograph_edition\t",
             "first_editor\t",
             "parent_publication_title_id\t",
             "preceding_publication_title_id\t",
@@ -85,14 +85,20 @@ class KBARTExportHandler extends Handler {
 
         foreach($monographs as $monograph) {
 
-            error_log("MONOGRAPH: " . var_export($monograph,true));
-            // error_log("publisherInstitution: " . $monograph->getData('publisherInstitution'));
-            // error_log("Author: " . var_export($this->getFirstAuthor($monograph),true));
-            // die();
+            $publication = $monograph->getCurrentPublication();
+            $publicationFormats = $publication->getData('publicationFormats');
+            
+            //foreach ($publicationFormats as $publicationFormat) {
+            //    $identificationCode = $publicationFormat->getIdentificationCodes();
+            //    error_log("getIdentificationCodes: " . var_export($identificationCode,true));
+            //}
+            //$physicalFormats = $this->getPropertyFromPublicationFormats($publicationFormats, 'physicalFormat');
+            //error_log(var_export($physicalFormats,true));
+            //die();
 
             $publicationTitle = $this->getPublicationTitle($monograph);
-            // $printIdentifier = $this->getPrintIdentifier($monograph);
-            // $onlineIdentifier = $this->getOnlineIdentifier($monograph);
+            $printIdentifier = $this->getPrintIdentifier($monograph);
+            $onlineIdentifier = $this->getOnlineIdentifier($monograph);
 
             $dateFirstIssueOnline = $this->getDateFirstIssueOnline();
             $numFirstVolOnline = $this->getNumFirstVolOnline();
@@ -111,10 +117,10 @@ class KBARTExportHandler extends Handler {
             $publisherName = $this->getPublisherName($monograph);
             $publicationType = $this->getPublicationType();
 
-            // $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint();
-            // $dateMonographPublishedOnline = $this->getMonographPublishedOnline();
-            // $monographVolume = $this->getMonographVolume();
-            // $monographEdition = $this->getMonographEdition();
+            $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint($monograph);
+            $dateMonographPublishedOnline = $this->getMonographPublishedOnline($monograph);
+            $monographVolume = $this->getMonographVolume($monograph);
+            $monographEdition = $this->getMonographEdition($monograph);
             $firstEditor = $this->getFirstEditor($monograph);
             $parentPublicationTitleId = $this->getParentPublicationTitleId();
             $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
@@ -122,8 +128,8 @@ class KBARTExportHandler extends Handler {
 
             $entry = [
                 $publicationTitle,
-                // $printIdentifier,
-                // $onlineIdentifier,
+                $printIdentifier,
+                $onlineIdentifier,
                 $dateFirstIssueOnline,
                 $numFirstVolOnline,
                 $numFirstIssueOnline,
@@ -138,10 +144,10 @@ class KBARTExportHandler extends Handler {
                 $notes,
                 $publisherName,
                 $publicationType,
-                // $dateMonographPublishedPrint,
-                // $dateMonographPublishedOnline,
-                // $monographVolume,
-                // $monographEdition,
+                $dateMonographPublishedPrint,
+                $dateMonographPublishedOnline,
+                $monographVolume,
+                $monographEdition,
                 $firstEditor,
                 $parentPublicationTitleId,
                 $precedingPublicationTitleId,
@@ -171,9 +177,29 @@ class KBARTExportHandler extends Handler {
 
         // Output file body.
         foreach($entries as $entry) {
-            error_log(var_export($entry,true));
+            //error_log(var_export($entry,true));
             echo implode("\t",$entry) . "\n";
         }
+    }
+
+    /**
+     * Store a property common to all given monographs in an array.
+     *
+     * @param array $issues
+     * @param string $property
+     */
+    function getPropertyFromPublicationFormats($publicationFormats, $property) {
+
+        // Convert nested array of Issue objects to pure nested array.
+        $publicationFormats_arr = json_decode(json_encode($publicationFormats), true);
+
+        // Create nested array filled only with '_data' property of Issue object.
+        $publicationFormats_arr_data = array_column($publicationFormats_arr, '_data');
+
+        // Create new array containing the values of the given property.
+        $properties = array_column($publicationFormats_arr_data, $property);
+
+        return $properties;
     }
 
     /**
@@ -227,7 +253,17 @@ class KBARTExportHandler extends Handler {
      */
     function getPrintIdentifier($monograph) {
         $publication = $monograph->getCurrentPublication();
-        return $monograph->getData('printIssn');
+        $publicationFormats = $publication->getData('publicationFormats');
+        foreach ($publicationFormats as $publicationFormat) {
+            if ($publicationFormat->getData('physicalFormat') == 0) {
+                $identificationCodes = $publicationFormat->getIdentificationCodes()->toArray();
+                if (isset($identificationCodes) && !empty($identificationCodes)) {
+                    $isbn = $identificationCodes[0]->getData('value');
+                    break;
+                }
+            }
+        }
+        return $isbn;
     }
 
     /**
@@ -236,8 +272,19 @@ class KBARTExportHandler extends Handler {
      * @param Journal $journal
      * @return string
      */
-    function getOnlineIdentifier($journal) {
-        return $journal->getData('onlineIssn');
+    function getOnlineIdentifier($monograph) {
+        $publication = $monograph->getCurrentPublication();
+        $publicationFormats = $publication->getData('publicationFormats');
+        foreach ($publicationFormats as $publicationFormat) {
+            if ($publicationFormat->getData('physicalFormat') == 1) {
+                $identificationCodes = $publicationFormat->getIdentificationCodes()->toArray();
+                if (isset($identificationCodes) && !empty($identificationCodes)) {
+                    $isbn = $identificationCodes[0]->getData('value');
+                    break;
+                }
+            }
+        }
+        return $isbn;
     }
 
     /**
@@ -320,7 +367,8 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getFirstAuthor($monograph) {
-        return $monograph->getCurrentPublication()->getPrimaryAuthor()->getFullName();
+        return "";
+        // return $monograph->getCurrentPublication()->getPrimaryAuthor()->getFullName();
         // $authors = $monograph->getCurrentPublication()->getData('authors');
         // $authorIds = $this->getPropertyFromMonographs($monograph, '')
     }
@@ -380,7 +428,7 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getDateMonographPublishedPrint() {
+    function getDateMonographPublishedPrint($monograph) {
         return "";
     }
 
@@ -398,7 +446,7 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getMonographVolume() {
+    function getMonographVolume($monograph) {
         return "";
     }
 
@@ -407,7 +455,7 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getMonographEdition() {
+    function getMonographEdition($monograph) {
         return "";
     }
 
@@ -417,7 +465,8 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getFirstEditor($monograph) {
-        return $monograph->getCurrentPublication()->getEditorString();
+        // return $monograph->getCurrentPublication()->getEditorString();
+        return "";
     }
 
     /**
