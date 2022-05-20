@@ -53,28 +53,28 @@ class KBARTExportHandler extends Handler {
             "publication_title\t",
             // "print_identifier\t",
             // "online_identifier\n",
-            // "date_first_issue_online\t",
-            // "num_first_vol_online\t",
-            // "num_first_issue_online\t",
-            // "date_last_issue_online\t",
-            // "num_last_vol_online\t",
-            // "num_last_issue_online\t",
+            "date_first_issue_online\t",
+            "num_first_vol_online\t",
+            "num_first_issue_online\t",
+            "date_last_issue_online\t",
+            "num_last_vol_online\t",
+            "num_last_issue_online\t",
             "title_url\t",
-            // "first_author\t",
-            // "title_id\t",
-            // "embargo_info\t",
-            // "coverage_depth\t",
-            // "notes\t",
-            // "publisher_name\t",
-            // "publication_type\t",
+            "first_author\t",
+            "title_id\t",
+            "embargo_info\t",
+            "coverage_depth\t",
+            "notes\t",
+            "publisher_name\t",
+            "publication_type\t",
             // "date_monograph_published_print\t",
             // "date_monograph_published_online\t",
             // "monograph_volume\t",
             // "monograph_edition\t",
-            // "first_editor\t",
-            // "parent_publication_title_id\t",
-            // "preceding_publication_title_id\t",
-            // "access_type\n"
+            "first_editor\t",
+            "parent_publication_title_id\t",
+            "preceding_publication_title_id\t",
+            "access_type\n"
         ];
 
         // Get all monographs of the press.
@@ -85,69 +85,67 @@ class KBARTExportHandler extends Handler {
 
         foreach($monographs as $monograph) {
 
-            error_log("MONOGRAPH" . var_export($monograph,true));
-            error_log("PUBLICATION" . var_export($monograph->getCurrentPublication(),true));
-            die();
+            error_log("MONOGRAPH: " . var_export($monograph,true));
+            // error_log("publisherInstitution: " . $monograph->getData('publisherInstitution'));
+            // error_log("Author: " . var_export($this->getFirstAuthor($monograph),true));
+            // die();
+
             $publicationTitle = $this->getPublicationTitle($monograph);
             // $printIdentifier = $this->getPrintIdentifier($monograph);
             // $onlineIdentifier = $this->getOnlineIdentifier($monograph);
 
-            // $dateFirstIssueOnline = $this->getDateFirstIssueOnline($issues);
-            // $numFirstVolOnline = $this->getNumFirstVolOnline($issues, $dateFirstIssueOnline);
-            // $numFirstIssueOnline = $this->getNumFirstIssueOnline($issues, $dateFirstIssueOnline);
-            //
-            // $dateLastIssueOnline = $this->getDateLastIssueOnline($issues);
-            // $numLastVolOnline = $this->getNumLastVolOnline($issues, $dateLastIssueOnline);
-            // $numLastIssueOnline = $this->getNumLastIssueOnline($issues, $dateLastIssueOnline);
-            //
+            $dateFirstIssueOnline = $this->getDateFirstIssueOnline();
+            $numFirstVolOnline = $this->getNumFirstVolOnline();
+            $numFirstIssueOnline = $this->getNumFirstIssueOnline();
+
+            $dateLastIssueOnline = $this->getDateLastIssueOnline();
+            $numLastVolOnline = $this->getNumLastVolOnline();
+            $numLastIssueOnline = $this->getNumLastIssueOnline();
+
             $titleUrl = $this->getTitleUrl($request, $monograph);
-            // $firstAuthor = $this->getFirstAuthor();
-            // $titleId = $this->getTitleId($journal);
-            // $embargoInfo = $this->getEmbargoInfo();
-            // $coverageDepth = $this->getCoverageDepth();
-            // $notes = $this->getNotes();
-            // $publisherName = $this->getPublisherName($journal);
-            // $publicationType = $this->getPublicationType();
-            //
+            $firstAuthor = $this->getFirstAuthor($monograph);
+            $titleId = $this->getTitleId($monograph);
+            $embargoInfo = $this->getEmbargoInfo();
+            $coverageDepth = $this->getCoverageDepth();
+            $notes = $this->getNotes();
+            $publisherName = $this->getPublisherName($monograph);
+            $publicationType = $this->getPublicationType();
+
             // $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint();
             // $dateMonographPublishedOnline = $this->getMonographPublishedOnline();
             // $monographVolume = $this->getMonographVolume();
             // $monographEdition = $this->getMonographEdition();
-            // $firstEditor = $this->getFirstEditor();
-            // $parentPublicationTitleId = $this->getParentPublicationTitleId();
-            // $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
-            // $accessType = $this->getAccessType();
-
-            error_log("=============================================");
-            error_log("publicationTitle: " . $publicationTitle);
-            error_log("titleUrl: " . $titleUrl);
+            $firstEditor = $this->getFirstEditor($monograph);
+            $parentPublicationTitleId = $this->getParentPublicationTitleId();
+            $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
+            $accessType = $this->getAccessType();
 
             $entry = [
                 $publicationTitle,
                 // $printIdentifier,
                 // $onlineIdentifier,
-                // $dateFirstIssueOnline,
-                // $numFirstVolOnline,
-                // $numFirstIssueOnline,
-                // $dateLastIssueOnline,
-                // $numLastVolOnline,
-                // $numLastIssueOnline,
+                $dateFirstIssueOnline,
+                $numFirstVolOnline,
+                $numFirstIssueOnline,
+                $dateLastIssueOnline,
+                $numLastVolOnline,
+                $numLastIssueOnline,
                 $titleUrl,
-                // $firstAuthor,
-                // $titleId,
-                // $embargoInfo,
-                // $coverageDepth,
-                // $notes,
-                // $publisherName,
-                // $publicationType,
+                $firstAuthor,
+                $titleId,
+                $embargoInfo,
+                $coverageDepth,
+                $notes,
+                $publisherName,
+                $publicationType,
                 // $dateMonographPublishedPrint,
                 // $dateMonographPublishedOnline,
                 // $monographVolume,
                 // $monographEdition,
-                // $firstEditor,
-                // $parentPublicationTitleId,
-                // $precedingPublicationTitleId,
-                // $accessType
+                $firstEditor,
+                $parentPublicationTitleId,
+                $precedingPublicationTitleId,
+                $accessType
             ];
 
             $entries[] = $entry;
@@ -173,6 +171,7 @@ class KBARTExportHandler extends Handler {
 
         // Output file body.
         foreach($entries as $entry) {
+            error_log(var_export($entry,true));
             echo implode("\t",$entry) . "\n";
         }
     }
@@ -194,16 +193,16 @@ class KBARTExportHandler extends Handler {
      * @param array $issues
      * @param string $property
      */
-    function getPropertyFromIssues($issues, $property) {
+    function getPropertyFromMonographs($monographs, $property) {
 
         // Convert nested array of Issue objects to pure nested array.
-        $issues_arr = json_decode(json_encode($issues), true);
+        $monographs_arr = json_decode(json_encode($monographs), true);
 
         // Create nested array filled only with '_data' property of Issue object.
-        $issues_arr_data = array_column($issues_arr, '_data');
+        $monographs_arr_data = array_column($monographs_arr, '_data');
 
         // Create new array containing the values of the given property.
-        $properties = array_column($issues_arr_data, $property);
+        $properties = array_column($monographs_arr_data, $property);
 
         return $properties;
     }
@@ -247,13 +246,8 @@ class KBARTExportHandler extends Handler {
      * @param array $issues
      * @return string
      */
-    function getDateFirstIssueOnline($issues) {
-
-        // Get publication dates of given issues as array.
-        $dates = $this->getPropertyFromIssues($issues, 'datePublished');
-
-        // Return minimal value in dates array to get earliest date.
-        return min($dates);
+    function getDateFirstIssueOnline() {
+        return "";
     }
 
     /**
@@ -263,14 +257,8 @@ class KBARTExportHandler extends Handler {
      * @param string $dateFirstIssueOnline
      * @return int $volumeNumber
      */
-    function getNumFirstVolOnline($issues, $dateFirstIssueOnline) {
-        foreach ($issues as $issue) {
-            if ($issue->getData('datePublished') == $dateFirstIssueOnline) {
-                $volumeNumber = $issue->getData('volume');
-                break;
-            }
-        }
-        return $volumeNumber;
+    function getNumFirstVolOnline() {
+        return "";
     }
 
     /**
@@ -280,14 +268,8 @@ class KBARTExportHandler extends Handler {
      * @param string $dateFirstIssueOnline
      * @param int $issueNumber
      */
-    function getNumFirstIssueOnline($issues, $dateFirstIssueOnline) {
-        foreach ($issues as $issue) {
-            if ($issue->getData('datePublished') == $dateFirstIssueOnline) {
-                $issueNumber = $issue->getData('number');
-                break;
-            }
-        }
-        return $issueNumber;
+    function getNumFirstIssueOnline() {
+        return "";
     }
 
     /**
@@ -296,13 +278,8 @@ class KBARTExportHandler extends Handler {
      * @param array $issues
      * @return string
      */
-    function getDateLastIssueOnline($issues) {
-
-        // Get publication dates of given issues as array.
-        $dates = $this->getPropertyFromIssues($issues, 'datePublished');
-
-        // Return maximal value in dates array to get latest date.
-        return max($dates);
+    function getDateLastIssueOnline() {
+        return "";
     }
 
     /**
@@ -312,14 +289,8 @@ class KBARTExportHandler extends Handler {
      * @param string $dateLastIssueOnline
      * @return int $volumeNumber
      */
-    function getNumLastVolOnline($issues, $dateLastIssueOnline) {
-        foreach ($issues as $issue) {
-            if ($issue->getData('datePublished') == $dateLastIssueOnline) {
-                $volumeNumber = $issue->getData('volume');
-                break;
-            }
-        }
-        return $volumeNumber;
+    function getNumLastVolOnline() {
+        return "";
     }
 
     /**
@@ -329,24 +300,18 @@ class KBARTExportHandler extends Handler {
      * @param string $dateLastIssueOnline
      * @return int $volumeNumber
      */
-    function getNumLastIssueOnline($issues, $dateLastIssueOnline) {
-        foreach ($issues as $issue) {
-            if ($issue->getData('datePublished') == $dateLastIssueOnline) {
-                $issueNumber = $issue->getData('number');
-                break;
-            }
-        }
-        return $issueNumber;
+    function getNumLastIssueOnline() {
+        return "";
     }
 
     /**
      * Get the title URL.
      *
      * @param Request $request
-     * @return Journal $journal
+     * @return Submission $monograph
      */
     function getTitleUrl($request, $monograph) {
-        return $request->getRouter()->url($request, $monograph->getCurrentPublication()->getData('urlPath'));
+        return $request->getRouter()->url($request, null, 'catalog', 'book', $monograph->getId());
     }
 
     /**
@@ -354,12 +319,14 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getFirstAuthor() {
-        return "";
+    function getFirstAuthor($monograph) {
+        return $monograph->getCurrentPublication()->getPrimaryAuthor()->getFullName();
+        // $authors = $monograph->getCurrentPublication()->getData('authors');
+        // $authorIds = $this->getPropertyFromMonographs($monograph, '')
     }
 
-    function getTitleId($journal) {
-        return $journal->getId();
+    function getTitleId($monograph) {
+        return $monograph->getId();
     }
 
     /**
@@ -395,8 +362,8 @@ class KBARTExportHandler extends Handler {
      * @param Journal $journal
      * @return string
      */
-    function getPublisherName($journal) {
-        return $journal->getSetting('publisherInstitution');
+    function getPublisherName($monograph) {
+        return $monograph->getCurrentPublication()->getData('publisherInstitution');
     }
 
     /**
@@ -405,7 +372,7 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getPublicationType() {
-        return "serial";
+        return "monograph";
     }
 
     /**
@@ -422,7 +389,7 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getMonographPublishedOnline() {
+    function getMonographPublishedOnline($monograph) {
         return "";
     }
 
@@ -449,8 +416,8 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getFirstEditor() {
-        return "";
+    function getFirstEditor($monograph) {
+        return $monograph->getCurrentPublication()->getEditorString();
     }
 
     /**
