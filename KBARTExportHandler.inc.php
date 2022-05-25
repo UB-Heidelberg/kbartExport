@@ -83,19 +83,27 @@ class KBARTExportHandler extends Handler {
         $submissionDao = DAORegistry::getDAO('SubmissionDAO');
         $monographs = $submissionDao->getByContextId($press->getId())->toArray();
 
-        foreach($monographs as $monograph) {
+        $submission = $submissionDao->getById(855);
+        //error_log("MONOGRAPH 855: " . var_export($submission,true), 3, "/home/otte/omp-errors.log");
 
-            $publication = $monograph->getCurrentPublication();
-            $publicationFormats = $publication->getData('publicationFormats');
-            
-            //foreach ($publicationFormats as $publicationFormat) {
-            //    $identificationCode = $publicationFormat->getIdentificationCodes();
-            //    error_log("getIdentificationCodes: " . var_export($identificationCode,true));
-            //}
-            //$physicalFormats = $this->getPropertyFromPublicationFormats($publicationFormats, 'physicalFormat');
-            //error_log(var_export($physicalFormats,true));
-            //die();
+        //$authors = $submission->getCurrentPublication()->getData('authors');
+		//$editorNames = [];
+		//foreach ($authors as $author) {
+		//	error_log("getIsVolumeEditor: " . $author->getIsVolumeEditor()); 
+		//}
+        
+        //error_log("SUBMISSION ID: " . $submission->getId());
+        //$testMonograph = $press->getById(),
+        //error_log("first_editor: " . $monograph->getCurrentPublication()->getEditorString()[0]);
+        //error_log("Monograph: " . $submission->getId() . ", First Editor: " . $submission->getCurrentPublication()->getEditorString());
+        //error_log("AUTHORS: " . var_export($submission->getAuthors(),true));
+        //error_log("Primary Author: " . $submission->getCurrentPublication()->getPrimaryAuthor()->getFamilyName());
+        //$authors = $submission->getAuthors();
+	    //$primaryAuthor = $authors[0]->getFullName();
+        //error_log("PRIMARY AUTHOR: " . var_export($primaryAuthor,true));
+        //die();
 
+        foreach($monographs as $monograph) {            
             $publicationTitle = $this->getPublicationTitle($monograph);
             $printIdentifier = $this->getPrintIdentifier($monograph);
             $onlineIdentifier = $this->getOnlineIdentifier($monograph);
@@ -114,7 +122,7 @@ class KBARTExportHandler extends Handler {
             $embargoInfo = $this->getEmbargoInfo();
             $coverageDepth = $this->getCoverageDepth();
             $notes = $this->getNotes();
-            $publisherName = $this->getPublisherName($monograph);
+            $publisherName = $this->getPublisherName($press);
             $publicationType = $this->getPublicationType();
 
             $dateMonographPublishedPrint = $this->getDateMonographPublishedPrint($monograph);
@@ -177,7 +185,6 @@ class KBARTExportHandler extends Handler {
 
         // Output file body.
         foreach($entries as $entry) {
-            //error_log(var_export($entry,true));
             echo implode("\t",$entry) . "\n";
         }
     }
@@ -259,11 +266,15 @@ class KBARTExportHandler extends Handler {
                 $identificationCodes = $publicationFormat->getIdentificationCodes()->toArray();
                 if (isset($identificationCodes) && !empty($identificationCodes)) {
                     $isbn = $identificationCodes[0]->getData('value');
+                    if (isset($isbn) && !empty($isbn)) {
+                        return $isbn;
+                    } else {
+                        return "";
+                    }
                     break;
                 }
             }
         }
-        return $isbn;
     }
 
     /**
@@ -280,11 +291,15 @@ class KBARTExportHandler extends Handler {
                 $identificationCodes = $publicationFormat->getIdentificationCodes()->toArray();
                 if (isset($identificationCodes) && !empty($identificationCodes)) {
                     $isbn = $identificationCodes[0]->getData('value');
+                    if (isset($isbn) && !empty($isbn)) {
+                        return $isbn;
+                    } else {
+                        return "";
+                    }
                     break;
                 }
             }
         }
-        return $isbn;
     }
 
     /**
@@ -367,14 +382,18 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getFirstAuthor($monograph) {
-        return "";
-        // return $monograph->getCurrentPublication()->getPrimaryAuthor()->getFullName();
-        // $authors = $monograph->getCurrentPublication()->getData('authors');
-        // $authorIds = $this->getPropertyFromMonographs($monograph, '')
+        $primaryAuthor = $monograph->getPrimaryAuthor();
+        if (!isset($primaryAuthor)) {
+            $authors = $monograph->getAuthors();
+            $primaryAuthor = $authors[0];
+        }
+        return $primaryAuthor->getFullName();
     }
 
     function getTitleId($monograph) {
-        return $monograph->getId();
+        $publication = $monograph->getCurrentPublication();
+        return $publication->getData('pub-id::doi');
+        //return $monograph->getId();
     }
 
     /**
@@ -410,8 +429,9 @@ class KBARTExportHandler extends Handler {
      * @param Journal $journal
      * @return string
      */
-    function getPublisherName($monograph) {
-        return $monograph->getCurrentPublication()->getData('publisherInstitution');
+    function getPublisherName($press) {
+        return $press->getData('publisher');
+        //return $monograph->getCurrentPublication()->getData('publisherInstitution');
     }
 
     /**
@@ -429,7 +449,8 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getDateMonographPublishedPrint($monograph) {
-        return "";
+        $publication = $monograph->getCurrentPublication();
+        return $publication->getData('datePublished');
     }
 
     /**
@@ -465,8 +486,9 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getFirstEditor($monograph) {
-        // return $monograph->getCurrentPublication()->getEditorString();
-        return "";
+        $firstEditor = $monograph->getCurrentPublication()->getEditorString();
+        error_log("FirstEditor: " . var_export($firstEditor,true));
+        return $firstEditor;
     }
 
     /**
