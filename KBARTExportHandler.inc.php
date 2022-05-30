@@ -83,25 +83,42 @@ class KBARTExportHandler extends Handler {
         $submissionDao = DAORegistry::getDAO('SubmissionDAO');
         $monographs = $submissionDao->getByContextId($press->getId())->toArray();
 
-        $submission = $submissionDao->getById(855);
-        //error_log("MONOGRAPH 855: " . var_export($submission,true), 3, "/home/otte/omp-errors.log");
+        $testSubmission = $submissionDao->getById(855);
+        $publication = $testSubmission->getCurrentPublication();
+        $publicationFormats = $publication->getData('publicationFormats');
 
-        //$authors = $submission->getCurrentPublication()->getData('authors');
-		//$editorNames = [];
-		//foreach ($authors as $author) {
-		//	error_log("getIsVolumeEditor: " . $author->getIsVolumeEditor()); 
-		//}
-        
-        //error_log("SUBMISSION ID: " . $submission->getId());
-        //$testMonograph = $press->getById(),
-        //error_log("first_editor: " . $monograph->getCurrentPublication()->getEditorString()[0]);
-        //error_log("Monograph: " . $submission->getId() . ", First Editor: " . $submission->getCurrentPublication()->getEditorString());
-        //error_log("AUTHORS: " . var_export($submission->getAuthors(),true));
-        //error_log("Primary Author: " . $submission->getCurrentPublication()->getPrimaryAuthor()->getFamilyName());
-        //$authors = $submission->getAuthors();
-	    //$primaryAuthor = $authors[0]->getFullName();
-        //error_log("PRIMARY AUTHOR: " . var_export($primaryAuthor,true));
-        //die();
+        // Iterate over publication formats considering only those with a physical format.
+        // foreach ($publicationFormats as $publicationFormat) {
+        //     if ($publicationFormat->getData('physicalFormat') == 1) {
+        //     
+        //         // Get all publication dates and store them in an array.
+        //         $publicationDates = $publicationFormat->getPublicationDates()->toArray();
+
+        //         // Iterate over publication dates
+        //         if (isset($publicationDates) && !empty($publicationDates)) {
+        //             foreach ($publicationDates as $publicationDate) {
+        //                 
+        //                 // Get the role of the publication date.
+        //                 $role = $publicationDate->getData('role');
+        //                 
+        //                 if (isset($role) && !empty($role)) {
+        //                     if ($role == '11') {
+        //                         // Get "Date of first publication"
+        //                         $date = date_parse_from_format('Ymd', $publicationDate->getDate());
+        //                         return $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+        //                         // Stop both foreach loops
+        //                         break 2;
+        //                     } elseif ($role == '01') {
+        //                         // Get "Publication date"
+        //                         $date = date_parse_from_format('Ymd', $publicationDate->getDate());
+        //                         return $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+        //                         break 2;
+        //                     }
+        //                 }
+        //             }
+        //        }
+        //     }
+        // }
 
         foreach($monographs as $monograph) {            
             $publicationTitle = $this->getPublicationTitle($monograph);
@@ -130,7 +147,7 @@ class KBARTExportHandler extends Handler {
             $monographVolume = $this->getMonographVolume($monograph);
             $monographEdition = $this->getMonographEdition($monograph);
             $firstEditor = $this->getFirstEditor($monograph);
-            $parentPublicationTitleId = $this->getParentPublicationTitleId();
+            $parentPublicationTitleId = $this->getParentPublicationTitleId($press, $monograph);
             $precedingPublicationTitleId = $this->getPrecedingPublicationTitleId();
             $accessType = $this->getAccessType();
 
@@ -241,7 +258,7 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Get the publication's title of the journal.
+     * Get the publication's title of the monograph.
      *
      * @param Submission $monograph
      * @return string
@@ -253,7 +270,7 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Get the print-format identifier of the journal.
+     * Get the print-format identifier of the monograph.
      *
      * @param Journal $journal
      * @return string
@@ -278,7 +295,7 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Get the online-format identifier of the journal.
+     * Get the online-format identifier of the monograph.
      *
      * @param Journal $journal
      * @return string
@@ -424,18 +441,17 @@ class KBARTExportHandler extends Handler {
     }
 
     /**
-     * Get the publisher's name of the journal.
+     * Get the publisher's name of the monograph.
      *
      * @param Journal $journal
      * @return string
      */
     function getPublisherName($press) {
         return $press->getData('publisher');
-        //return $monograph->getCurrentPublication()->getData('publisherInstitution');
     }
 
     /**
-     * Get the first author's name (not avaible for journals).
+     * Get the publication type.
      *
      * @return string
      */
@@ -450,7 +466,55 @@ class KBARTExportHandler extends Handler {
      */
     function getDateMonographPublishedPrint($monograph) {
         $publication = $monograph->getCurrentPublication();
-        return $publication->getData('datePublished');
+        $publicationFormats = $publication->getData('publicationFormats');
+        
+        // foreach ($publicationFormats as $publicationFormat) {
+        //     if ($publicationFormat->getData('physicalFormat') == 1) {
+        //         $publicationDates = $publicationFormat->getPublicationDates()->toArray();
+        //         if (isset($publicationDates) && !empty($publicationDates)) {
+        //             //error_log("publicationDates: " . var_export($publicationDates);
+        //             $date = date_parse_from_format('Ymd', $publicationDates[0]->getDate());
+        //             $publicationDate = $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+        //         } else {
+        //             $publicationDate = "";
+        //         }
+        //         break;
+        //     }
+        // }
+        // return $publicationDate;
+
+        // Iterate over publication formats considering only those with a physical format.
+        foreach ($publicationFormats as $publicationFormat) {
+            if ($publicationFormat->getData('physicalFormat') == 1) {
+                
+                // Get all publication dates and store them in an array.
+                $publicationDates = $publicationFormat->getPublicationDates()->toArray();
+
+                // Iterate over publication dates
+                if (isset($publicationDates) && !empty($publicationDates)) {
+                    foreach ($publicationDates as $publicationDate) {
+
+                        // Get the role of the publication date.
+                        $role = $publicationDate->getData('role');
+
+                        if (isset($role) && !empty($role)) {
+                            if ($role == '11') {
+                                // Get "Date of first publication"
+                                $date = date_parse_from_format('Ymd', $publicationDate->getDate());
+                                return $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+                                // Stop both foreach loops
+                                break 2;
+                            } elseif ($role == '01') {
+                                // Get "Publication date"
+                                $date = date_parse_from_format('Ymd', $publicationDate->getDate());
+                                return $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+                                break 2;
+                            }
+                        }
+                    }
+               }
+            }
+        }
     }
 
     /**
@@ -459,7 +523,8 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getMonographPublishedOnline($monograph) {
-        return "";
+        $publication = $monograph->getCurrentPublication();
+        return $publication->getData('datePublished');
     }
 
     /**
@@ -468,7 +533,7 @@ class KBARTExportHandler extends Handler {
      * @return string
      */
     function getMonographVolume($monograph) {
-        return "";
+        return $monograph->getSeriesPosition();
     }
 
     /**
@@ -487,7 +552,7 @@ class KBARTExportHandler extends Handler {
      */
     function getFirstEditor($monograph) {
         $firstEditor = $monograph->getCurrentPublication()->getEditorString();
-        error_log("FirstEditor: " . var_export($firstEditor,true));
+        //error_log("FirstEditor: " . var_export($firstEditor,true));
         return $firstEditor;
     }
 
@@ -496,8 +561,16 @@ class KBARTExportHandler extends Handler {
      *
      * @return string
      */
-    function getParentPublicationTitleId() {
-        return "";
+    function getParentPublicationTitleId($press, $monograph) {
+        $publication = $monograph->getCurrentPublication();
+        $seriesId = $publication->getData('seriesId');
+        $seriesDao = DAORegistry::getDAO('SeriesDAO'); /* @var $seriesDao SeriesDAO */
+        $series = $seriesDao->getById($seriesId, $press->getId());
+        if (isset($series) && !empty($series)) {
+            return $series->getLocalizedTitle();
+        } else {
+            return "";
+        }
     }
 
     /**
