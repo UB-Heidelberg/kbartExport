@@ -409,8 +409,12 @@ class KBARTExportHandler extends Handler {
 
     function getTitleId($monograph) {
         $publication = $monograph->getCurrentPublication();
-        return $publication->getData('pub-id::doi');
-        //return $monograph->getId();
+        $doi = $publication->getData('pub-id::doi');
+        if (isset($doi) && !empty($doi)) {
+            return "https://doi.org/" . $doi;
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -512,7 +516,7 @@ class KBARTExportHandler extends Handler {
                             }
                         }
                     }
-               }
+                }
             }
         }
     }
