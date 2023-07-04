@@ -9,4 +9,7 @@ and can be configured in the plugin's settings. The field values are tab-separat
 Further information concerning KBART in general can be found at https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=470024321 (in german) and the links therein (in english).
 
 ## System Requirements
-This plugin is compatible with OJS 3.2.
+This plugin is compatible with
+- OJS 3.2,
+- OMP 3.3,
+- OMP 3.4
