@@ -14,4 +14,8 @@ git clone https://gitlab.ub.uni-heidelberg.de/sf409/kbartexport.git kbartExport
 ```
 
 ## System Requirements
-This plugin is compatible with OJS 3.2 and OMP 3.3.
+This plugin is compatible with
+- OJS 3.2,
+- OMP 3.3,
+- OMP 3.4
+
